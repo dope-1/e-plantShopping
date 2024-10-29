@@ -4,8 +4,7 @@ export const CartSlice = createSlice({
   name: 'cart',
   initialState: {
     items: [], // Initialize items as an empty array
-    totalQuantity: 0,
-    totalCost: 0,
+    
   },
   reducers: {
     addItem: (state, action) => {
@@ -16,27 +15,25 @@ export const CartSlice = createSlice({
         } else {
         state.items.push({ name, image, cost, quantity: 1 });
          }
-         state.totalQuantity += 1;
-         state.totalCost = state.items.reduce((total, item) => total + item.quantity * item.cost, 0);
     
     },
     removeItem: (state, action) => {
-        const item = state.items.find((item) => item.name === action.payload.name);
-        if (item) {
-          state.totalQuantity -= item.quantity;
+        const item=action.payload;
+        const existingitem = state.items.find((item) => item.name === action.payload.name);
+        if (existingitem) {
+            state.items=state.items.filter((i)=>i.name!==item.name);
         }
-        state.items = state.items.filter((item) => item.name !== action.payload.name);
-        state.totalCost = state.items.reduce((total, item) => total + item.quantity * item.cost, 0);
+       
     },
     updateQuantity: (state, action) => {
 
         const { name, quantity } = action.payload;
         const itemToUpdate = state.items.find(item => item.name === name);
-        if (itemToUpdate) {
-         state.totalQuantity += quantity - item.quantity;
-         itemToUpdate.quantity = quantity;
+        itemToUpdate.quantity = quantity;
+        if (itemToUpdate.quantity==0) {
+            state.items = state.items.filter((i) => i.name !== name);
          }
-         state.totalCost = state.items.reduce((total, item) => total + item.quantity * item.cost, 0);
+        
   },
 },
 });
